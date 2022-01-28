@@ -1,2 +1,2 @@
 # GEOG331
-Code foe GEOG331 Environmental Data Science at Colgate University
+Code for GEOG331 Environmental Data Science at Colgate University
