@@ -2,7 +2,7 @@
 #Activity 1
 
 #new vector
-v = c(35, 89, 75)
+v = c(35, 89, 75, 237)
 
 #Addition
 v + 3
