@@ -78,3 +78,76 @@ abline(v = mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE) + sd(weather$TAVE[w
        lty = 3,
        lwd = 3)
 
+#add probability curve
+#--------------------------------------------------------------
+#make a histogram for the first site in our levels
+#using the weather index for Aberdeen 
+#note I've named the histogram so I can reference it later
+h1 <- hist(weather$TAVE[weather$siteN == 1],
+           freq=FALSE, 
+           main = paste(levels(weather$NAME)[1]),
+           xlab = "Average daily temperature (degrees C)", 
+           ylab="Relative frequency",
+           col="grey50",
+           border="white")
+#the seq function generates a sequence of numbers that we can use to plot the 
+#normal across the range of temperature values
+x.plot <- seq(-10,30, length.out = 100)
+#the dnorm function will produce the probability density based on a mean and standard deviation.
+
+y.plot <-  dnorm(seq(-10,30, length.out = 100),
+                 mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE),
+                 sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))
+#create a density that is scaled to fit in the plot  since the density has a 
+#different range from the data density.
+y.scaled <- (max(h1$density)/max(y.plot)) * y.plot
+
+#points function adds points or lines to a graph  
+#the first two arguments are the x coordinates and the y coordinates.
+
+points(x.plot,
+       y.scaled, 
+       type = "l", 
+       col = "tomato3",
+       lwd = 4, 
+       lty = 2)
+
+
+#Weather averages
+#----------------------------------------------------------------------
+#pnorm(value to evaluate at mean, standard deviation)
+pnorm(0,
+      mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE),
+      sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))
+
+
+#pnrom with 5 gives me all probability (area of the curve) below 5 
+pnorm(5,
+      mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE),
+      sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))
+
+#pnrom with 5 gives me all probability (area of the curve) below 5 
+pnorm(5,
+      mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE),
+      sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))- 
+  pnorm(0,
+        mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE),
+        sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))
+
+
+
+
+
+#pnorm of 20 gives the probability (area of the curve) below 20 
+#subtracting from one leaves the area above 20
+1 - pnorm(20,
+          mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE),
+          sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))
+
+#qnorm of .95 - .05 gives the probability negating the outer 10% of data 
+qnorm(0.95,
+      mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE),
+      sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))-
+  qnorm(0.05,
+        mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE),
+        sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))
