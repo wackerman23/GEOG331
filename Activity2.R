@@ -179,7 +179,6 @@ hist(weather$TAVE[weather$siteN == 4],
      ylab="Relative frequency",
      col="deepskyblue3",
      border="white")
-weather$NAME(3)
 
 
 #add mean line with red (tomato3) color
@@ -205,9 +204,8 @@ abline(v = mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE) + sd(weather$TAVE[w
 
 #add probability curve
 #--------------------------------------------------------------
-#make a histogram for the first site in our levels
+#make a histogram for the first site in data
 #using the weather index for Aberdeen 
-#note I've named the histogram so I can reference it later
 h1 <- hist(weather$TAVE[weather$siteN == 1],
            freq=FALSE,
            main = paste(levels(weather$NAME)[1]),
@@ -215,11 +213,12 @@ h1 <- hist(weather$TAVE[weather$siteN == 1],
            ylab="Relative frequency",
            col="grey50",
            border="white")
+
 #the seq function generates a sequence of numbers that we can use to plot the 
 #normal across the range of temperature values
 x.plot <- seq(-10,30, length.out = 100)
-#the dnorm function will produce the probability density based on a mean and standard deviation.
 
+#the dnorm function will produce the probability density based on a mean and standard deviation.
 y.plot <-  dnorm(seq(-10,30, length.out = 100),
                  mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE),
                  sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))
@@ -276,3 +275,64 @@ qnorm(0.95,
   qnorm(0.05,
         mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE),
         sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))
+help(qnorm)
+
+
+#Question 7
+#--------------------------------------------------------
+#make a histogram for the first site in data
+#main= is the title name argument.
+hist(weather$PRCP[weather$siteN == 1],
+     freq=FALSE, 
+     main = paste(levels(weather$NAME)[1]),
+     xlab = "Average daily Precipitatation (MM)", 
+     ylab="Relative frequency",
+     col="deepskyblue3",
+     border="white")
+
+
+#add mean line with red (tomato3) color
+#and thickness of 3
+abline(v = mean(weather$PRCP[weather$siteN == 1],na.rm=TRUE), 
+       col = "tomato3",
+       lwd = 3)
+
+#lty changes dash pattern
+#add standard deviation line below the mean with red (tomato3) color
+#and thickness of 3
+abline(v = mean(weather$PRCP[weather$siteN == 1],na.rm=TRUE) - sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+#add standard deviation line above the mean with red (tomato3) color
+#and thickness of 3
+abline(v = mean(weather$PRCP[weather$siteN == 1],na.rm=TRUE) + sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+
+#Question 8
+#Aberdeen
+sum(weather$PRCP[weather$siteN == 1], na.rm=TRUE)
+#Livermore
+sum(weather$PRCP[weather$siteN == 2], na.rm=TRUE)
+#Mandan
+sum(weather$PRCP[weather$siteN == 3], na.rm=TRUE)
+#Mormon Flat
+sum(weather$PRCP[weather$siteN == 4], na.rm=TRUE)
+#Morrisville
+sum(weather$PRCP[weather$siteN == 5], na.rm=TRUE)
+
+#Question 9
+#Aberdeen
+mean(weather$PRCP[weather$siteN == 1], na.rm=TRUE)
+#Livermore
+mean(weather$PRCP[weather$siteN == 2], na.rm=TRUE)
+#Mandan
+mean(weather$PRCP[weather$siteN == 3], na.rm=TRUE)
+#Mormon Flat
+mean(weather$PRCP[weather$siteN == 4], na.rm=TRUE)
+#Morrisville
+mean(weather$PRCP[weather$siteN == 5], na.rm=TRUE)
+
+
