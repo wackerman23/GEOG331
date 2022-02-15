@@ -6,7 +6,7 @@
 setwd("Z:/students/wackerman/NOAA Weather/")
 
 # Import NOAA Data
-weather <- read.csv("Z:\\students\\wackerman\\NOAA Weather\\2011124.csv", stringsAsFactors = T)
+weather <- read.csv("/Users/willackerman/Downloads/noaa_weather/2011124.csv", stringsAsFactors = T)
 
 #print weather data information
 str(weather)
@@ -268,13 +268,20 @@ pnorm(5,
           mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE),
           sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))
 
-#qnorm of .95 - .05 gives the probability negating the outer 10% of data 
-qnorm(0.95,
+#qnorm of .95 gives the probability negating the outer 10% of data 
+highTemp = qnorm(0.95,
       mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE),
-      sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))-
-  qnorm(0.05,
-        mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE),
-        sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))
+      sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))
+
+#amount of times of extreme heat with increased temperature
+q6 = mean(weather$TAVE[weather$siteN == 1],na.rm=TRUE)+ 4 
+1 -pnorm(highTemp, q6,
+      sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE))
+
+
+#standard deviation
+sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE)
+  
 help(qnorm)
 
 
@@ -287,7 +294,7 @@ hist(weather$PRCP[weather$siteN == 1],
      main = paste(levels(weather$NAME)[1]),
      xlab = "Average daily Precipitatation (MM)", 
      ylab="Relative frequency",
-     col="deepskyblue3",
+     col="grey50",
      border="white")
 
 
@@ -300,16 +307,17 @@ abline(v = mean(weather$PRCP[weather$siteN == 1],na.rm=TRUE),
 #lty changes dash pattern
 #add standard deviation line below the mean with red (tomato3) color
 #and thickness of 3
-abline(v = mean(weather$PRCP[weather$siteN == 1],na.rm=TRUE) - sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE), 
+abline(v = mean(weather$PRCP[weather$siteN == 1],na.rm=TRUE) - sd(weather$PCRP[weather$siteN == 1],na.rm=TRUE), 
        col = "tomato3", 
        lty = 3,
        lwd = 3)
 #add standard deviation line above the mean with red (tomato3) color
 #and thickness of 3
-abline(v = mean(weather$PRCP[weather$siteN == 1],na.rm=TRUE) + sd(weather$TAVE[weather$siteN == 1],na.rm=TRUE), 
+abline(v = mean(weather$PRCP[weather$siteN == 1],na.rm=TRUE) + sd(weather$PCRP[weather$siteN == 1],na.rm=TRUE), 
        col = "tomato3", 
        lty = 3,
        lwd = 3)
+
 
 #Question 8
 #Aberdeen
@@ -323,7 +331,56 @@ sum(weather$PRCP[weather$siteN == 4], na.rm=TRUE)
 #Morrisville
 sum(weather$PRCP[weather$siteN == 5], na.rm=TRUE)
 
+
+#Question 8 Histogram
+#--------------------------------------------------------
+#change to yearly
+# Duplicate data
+
+yprcp = aggregate(x = weather$PRCP, by = list(weather$year), FUN = sum, na.rm=TRUE)
+
+#make a histogram for the first site in data
+#main= is the title name argument.
+hist(as.numeric(yprcp$x),
+     freq=FALSE, 
+     main = paste(levels(weather$NAME)[1]),
+     xlab = "Average Annual Precipitatation (MM)", 
+     ylab="Relative frequency",
+     col="grey50",
+     border="white")
+
+#add mean line with red (tomato3) color
+#and thickness of 3
+abline(v = mean(yprcp$x, na.rm=TRUE), 
+       col = "tomato3",
+       lwd = 3)
+
+#lty changes dash pattern
+#add standard deviation line below the mean with red (tomato3) color
+#and thickness of 3
+abline(v = mean(yprcp$x,na.rm=TRUE) - sd(yprcp$x,na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+#add standard deviation line above the mean with red (tomato3) color
+#and thickness of 3
+abline(v = mean(yprcp$x,na.rm=TRUE) + sd(yprcp$x,na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+
 #Question 9
+#Aberdeen
+mean(weather$TAVE[weather$siteN == 1], na.rm=TRUE)
+#Livermore
+mean(weather$TAVE[weather$siteN == 2], na.rm=TRUE)
+#Mandan
+mean(weather$TAVE[weather$siteN == 3], na.rm=TRUE)
+#Mormon Flat
+mean(weather$TAVE[weather$siteN == 4], na.rm=TRUE)
+#Morrisville
+mean(weather$TAVE[weather$siteN == 5], na.rm=TRUE)
+
 #Aberdeen
 mean(weather$PRCP[weather$siteN == 1], na.rm=TRUE)
 #Livermore
