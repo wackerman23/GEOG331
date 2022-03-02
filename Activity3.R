@@ -129,8 +129,8 @@ points(datW$DD[datW$precipitation > 0], datW$precipitation[datW$precipitation > 
 points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
        col= "tomato3", pch=19)
 
-#Question 5
-assert(length(lightscale > 0) == length(datW$lightning.acvitivy > 0), "error: unequal lengths")
+#Question 5 ----
+assert(length(lightscale) == length(datW$lightning.acvitivy), "error: unequal lengths")
 
 #filter out storms in wind and air temperature measurements
 # filter all values with lightning that coincides with rainfall greater than 2mm or only rainfall over 5 mm.    
@@ -139,12 +139,49 @@ datW$air.tempQ2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0,
                           ifelse(datW$precipitation > 5, NA, datW$air.tempQ1))
 
 
-#Question 6
+#Question 6 -----
 #filter out storms in wind and air temperature measurements
 # filter all values with lightning that coincides with rainfall greater than 2mm or only rainfall over 5 mm. 
 # filter windspeeds below .5mph and gust speeds over 4mph
 #create a new air temp column
-datW$air.tempQ3 <- ifelse(datW$wind.speed  >= .5 & datW$gust.speed > 4, NA, datW$air.tempQ2)
+datW$air.tempQ3 <- ifelse(datW$wind.speed  >= .5 & datW$gust.speed > 4, NA, datW$air.tempQ4)
 
 length(datW$air.tempQ3[!is.na(datW$air.tempQ3)])
+
+#Question 7 ----
+datW$soil.moisture2 <- ifelse(datW$soil.moisture > datW$precipitation + .25, NA, datW$soil.moisture)
+datW$soil.temp2 <- ifelse(datW$soil.temp > datW$air.temperature + 2.5, NA, datW$soil.temp)
+
+
+length(datW$soil.moisture2[!is.na(datW$soil.moisture2)])
+length(datW$soil.temp2[!is.na(datW$soil.temp2)])
+length(datW$soil.temp[!is.na(datW$soil.temp)])
+
+#Question 8 ----
+Q8 = data.frame(datW$DD)
+Q8$air.temp <- datW$air.tempQ3
+Q8$precipitation <- datW$precipitation
+Q8$moisture <- datW$soil.moisture2
+Q8$soil.temp <- datW$soil.temp2
+
+sum(Q8$precipitation, na.rm=TRUE)
+
+
+#Question 9 ----
+#create plot squares
+par(mfrow = c(2,2))
+
+plot(Q8$datW.DD, Q8$air.temp, pch=19, type="b", xlab = "Day of Year",
+     ylab="Air temperature (degrees C)")
+plot(Q8$datW.DD[Q8$precipitation > 0], Q8$precipitation[Q8$precipitation > 0], pch=19, type="b", xlab = "Day of Year",
+     ylab="Precipitation (CM)")
+plot(Q8$datW.DD[!is.na(Q8$soil.temp)], Q8$soil.temp[!is.na(Q8$soil.temp)], pch=19, type="b", xlab = "Day of Year",
+     ylab="Soil temperature (degrees C)")
+plot(Q8$datW.DD[!is.na(Q8$moisture)], Q8$moisture[!is.na(Q8$moisture)], pch=19, type="b", xlab = "Day of Year",
+     ylab="soil moisture")
+
+
+
+
+
 
