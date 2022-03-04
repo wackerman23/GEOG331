@@ -44,8 +44,8 @@ colnames(datW) <-   colnames(sensorInfo)
 
 #Lubridate Package -----
 #use install.packages to install lubridate
-#install.packages(c("lubridate"))
-#library("lubridate")
+install.packages(c("lubridate"))
+library("lubridate")
 
 #Convert date to standardized format -----
 #date format is m/d/y
@@ -141,12 +141,10 @@ length(datW$air.tempQ3[!is.na(datW$air.tempQ3)])
 
 #Question 7 ----
 datW$soil.moisture2 <- ifelse(datW$soil.moisture > datW$precipitation + .25, NA, datW$soil.moisture)
-datW$soil.temp2 <- ifelse(datW$soil.temp > datW$air.temperature + 2.5, NA, datW$soil.temp)
-
+datW$soil.temp2 <- ifelse(datW$soil.temp > datW$air.temperature + sd(datW$soil.temp, na.rm=TRUE), NA, datW$soil.temp)
 
 length(datW$soil.moisture2[!is.na(datW$soil.moisture2)])
 length(datW$soil.temp2[!is.na(datW$soil.temp2)])
-length(datW$soil.temp[!is.na(datW$soil.temp)])
 
 #Question 8 ----
 Q8 = data.frame(datW$DD)
@@ -155,7 +153,22 @@ Q8$precipitation <- datW$precipitation
 Q8$moisture <- datW$soil.moisture2
 Q8$soil.temp <- datW$soil.temp2
 
+#sum of precipitation
 sum(Q8$precipitation, na.rm=TRUE)
+
+#number of observations
+length(Q8$precipitation[!is.na(Q8$precipitation)])
+
+#time frame 
+time = Q8[length(Q8$precipitation[!is.na(Q8$precipitation)]), "datW.DD"] - Q8[1, "datW.DD"]
+days = time/1
+hours = (time%%1)/24
+minutes = (hours%%24)/60
+days
+hours
+minutes
+
+
 
 
 #Question 9 ----
