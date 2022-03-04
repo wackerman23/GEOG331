@@ -28,6 +28,9 @@ hist(summary(fit)$residuals, pch = 16,
 #shapiro test
 shapiro.test(summary(fit)$residuals)
 
+#qq plot
+qqnorm(summary(fit)$residuals, pch = 16)
+
 #add distribution line
 qqline(summary(fit)$residuals, datax = FALSE, distribution = qnorm, 
                probs = c(0.25, .75), qtype = 7, pch = 16)
