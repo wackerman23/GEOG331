@@ -26,14 +26,14 @@ assert(length(a) == length(b), "error: unequal length")
 
 #Initializing Data ----------------------------
 #set the working directory
-setwd("Z:\\students\\wackerman\\Bewkes Weather")
+setwd("/Users/willackerman/GEOG331/Bewkes Weather")
 
 # Import Bewkes Data
-datW <- read.csv("Z:\\students\\wackerman\\Bewkes Weather\\bewkes_weather.csv", 
+datW <- read.csv("/Users/willackerman/GEOG331/Bewkes Weather/bewkes_weather.csv", 
                  na.strings=c("#N/A"), skip=3, header=FALSE)
 
 #create sensor info data
-sensorInfo <- read.csv("Z:\\students\\wackerman\\Bewkes Weather\\bewkes_weather.csv",
+sensorInfo <- read.csv("/Users/willackerman/GEOG331/Bewkes Weather/bewkes_weather.csv",
                        na.strings=c("#N/A"), nrows=2)
 
 
@@ -44,8 +44,8 @@ colnames(datW) <-   colnames(sensorInfo)
 
 #Lubridate Package -----
 #use install.packages to install lubridate
-install.packages(c("lubridate"))
-library("lubridate")
+#install.packages(c("lubridate"))
+#library("lubridate")
 
 #Convert date to standardized format -----
 #date format is m/d/y
@@ -57,30 +57,15 @@ datW$hour <- hour(dates) + (minute(dates)/60)
 #calculate decimal day of year
 datW$DD <- datW$doy + (datW$hour/24)
 
-#Checking for Missing Data ----
-#see how many values have missing data for each sensor observation
-#air temperature
-length(which(is.na(datW$air.temperature)))
-#wind speed
-length(which(is.na(datW$wind.speed)))
-#precipitation
-length(which(is.na(datW$precipitation)))
-#soil temperature
-length(which(is.na(datW$soil.moisture)))
-#soil moisture
-length(which(is.na(datW$soil.temp)))
-
-#Visual Checks ------
-#make a plot with filled in points (using pch)
-#line lines
-plot(datW$DD, datW$soil.moisture, pch=19, type="b", xlab = "Day of Year",
-     ylab="Soil moisture (cm3 water per cm3 soil)")
-
-#make a plot with filled in points (using pch)
-#line lines
-plot(datW$DD, datW$air.temperature, pch=19, type="b", xlab = "Day of Year",
-     ylab="Air temperature (degrees C)")
-
+#Question 4 -----
+#check the values at the extreme range of the data
+#and throughout the percentiles
+quantile(datW$air.tempQ1)
+#look at days with really low air temperature
+datW[datW$air.tempQ1 < 8,]  
+#look at days with really high air temperature
+datW[datW$air.tempQ1 > 33,] 
+#QA/QC 1 ----
 #I'm going to make a new column to work with that indicates that I am conducting QAQC
 #because overwriting values should be done cautiously and can lead to confusing issues.
 #It can be particularly confusing when you are just learning R.
@@ -91,34 +76,12 @@ plot(datW$DD, datW$air.temperature, pch=19, type="b", xlab = "Day of Year",
 #In this case it is just given the air temperature value
 datW$air.tempQ1 <- ifelse(datW$air.temperature < 0, NA, datW$air.temperature)
 
-#Realistic Values -----
-
-#check the values at the extreme range of the data
-#and throughout the percentiles
-quantile(datW$air.tempQ1)
-
-#look at days with really low air temperature
-datW[datW$air.tempQ1 < 8,]  
-
-#look at days with really high air temperature
-datW[datW$air.tempQ1 > 33,] 
 
 #measurements outside of sensor capability -----
 #plot precipitation and lightning strikes on the same plot
 #normalize lighting strikes to match precipitation
 lightscale <- (max(datW$precipitation)/max(datW$lightning.acvitivy)) * datW$lightning.acvitivy
 #make the plot with precipitation and lightning activity marked
-#make it empty to start and add in features
-plot(datW$DD , datW$precipitation, xlab = "Day of Year", ylab = "Precipitation & lightning",
-     type="n")
-#plot precipitation points only when there is precipitation 
-#make the points semi-transparent
-points(datW$DD[datW$precipitation > 0], datW$precipitation[datW$precipitation > 0],
-       col= rgb(95/255,158/255,160/255,.5), pch=15)        
-
-#plot lightning points only when there is lightning     
-points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
-       col= "tomato3", pch=19)
 
 #Question 5 ----
 assert(length(lightscale) == length(datW$lightning.acvitivy), "error: unequal lengths")
@@ -138,6 +101,10 @@ datW$air.tempQ2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0,
 datW$air.tempQ3 <- ifelse(datW$wind.speed  >= .5 & datW$gust.speed > 4, NA, datW$air.tempQ2)
 
 length(datW$air.tempQ3[!is.na(datW$air.tempQ3)])
+
+#plot wind speed
+plot(datW$DD, datW$air.tempQ3, pch=19, type="b", xlab = "Day of Year",
+     ylab="Air temperature (degrees C)")
 
 #Question 7 ----
 datW$soil.moisture2 <- ifelse(datW$soil.moisture > datW$precipitation + .25, NA, datW$soil.moisture)
@@ -161,13 +128,10 @@ length(Q8$precipitation[!is.na(Q8$precipitation)])
 
 #time frame 
 time = Q8[length(Q8$precipitation[!is.na(Q8$precipitation)]), "datW.DD"] - Q8[1, "datW.DD"]
-days = time/1
-hours = (time%%1)/24
-minutes = (hours%%24)/60
-days
-hours
-minutes
-
+days = time%/%1
+hours = ((time%%1)*24)%/%1
+minutes = ((((time%%1)*24)%%1)*60)%/%1
+paste(days, " days ", hours, " hours ", minutes, " minutes")
 
 
 
