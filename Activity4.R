@@ -1,6 +1,8 @@
 #use built in iris dataset
 #take a look at it 
 head(iris)
+#whole table
+Full <- iris
 #versicolor
 flower <- iris[iris$Species == "versicolor",]
 
@@ -21,24 +23,28 @@ regressions <- vector()
 #write a for loop
 #that produces a regression table
 #for each of the following relationships
-for(i in 1:length(flower$Species)){
+for(i in 1:length(flower$Sepal.Length)){
    
   #1. iris  sepal length x width
+  sepal <- vector()
   sepal <- lm(flower$Sepal.Length ~ flower$Sepal.Width)
-  regressions[1] <- sepal
+  regressions1 <- append(1, sepal)
+  
   #2. iris  petal length x width
-  petal <- flower$Petal.Length[i] * flower$Petal.Width[i]
-  regressions[2] <- petal
+  petal <- lm(flower$Petal.Length ~ flower$Petal.Width)
+  regressions2 <- append(2, petal)
   
   #3. iris sepal length x petal length
-  sepalxpetal[i] <- flower$Sepal.Length[i] * flower$Petal.Length[i] 
-  regressions[3] <- sepalxpetal
+  sepalxpetal <- lm(flower$Sepal.Length ~ flower$Petal.Length) 
+  regressions3 <- append(3, sepalxpetal)
   
- 
+ regressions <-append(1, regressions1)
 }
+
+
 flower$Sepal.Length[1]
 sepal[1]
-length(sepal)
+length(regressions)
 
 # hint: consider using a list, and also new vectors for regression variables
 
@@ -53,8 +59,15 @@ length(sepal)
 height <- data.frame(Species = c("virginica","setosa","versicolor"),
                      Height.cm = c(60,100,11.8))
 
-irisD <- data.frame()
+NewT <- data.frame()
 
+shark <- full_join(
+  iris,
+  height,
+  by = "Species",
+  copy = FALSE,
+  keep = TRUE
+)
 
 
 #####################################
