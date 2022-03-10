@@ -17,34 +17,27 @@ library("ggplot2")
 #####################################
 
 #Initialization of vectors
-regressions <- vector()
+regressions <- list()
 
 #Using only data for iris versicolor
 #write a for loop
 #that produces a regression table
 #for each of the following relationships
-for(i in 1:length(flower$Sepal.Length)){
-   
+for(i in 1:1){
+
   #1. iris  sepal length x width
-  sepal <- vector()
-  sepal <- lm(flower$Sepal.Length ~ flower$Sepal.Width)
-  regressions1 <- append(1, sepal)
-  
+  regressions[[i]] <- summary(lm(flower$Sepal.Length ~ flower$Sepal.Width))
+
   #2. iris  petal length x width
-  petal <- lm(flower$Petal.Length ~ flower$Petal.Width)
-  regressions2 <- append(2, petal)
-  
+  regressions[[i +1]] <- summary(lm(flower$Petal.Length ~ flower$Petal.Width))
+
   #3. iris sepal length x petal length
-  sepalxpetal <- lm(flower$Sepal.Length ~ flower$Petal.Length) 
-  regressions3 <- append(3, sepalxpetal)
-  
- regressions <-append(1, regressions1)
+  regressions[[i+2]] <- summary(lm(flower$Sepal.Length ~ flower$Petal.Length))
+ 
+ 
 }
 
 
-flower$Sepal.Length[1]
-sepal[1]
-length(regressions)
 
 # hint: consider using a list, and also new vectors for regression variables
 
@@ -58,15 +51,14 @@ length(regressions)
 #to a new iris data frame
 height <- data.frame(Species = c("virginica","setosa","versicolor"),
                      Height.cm = c(60,100,11.8))
-
-NewT <- data.frame()
-
-shark <- full_join(
+as_tibble(height)
+as_tibble(iris)
+shark <- left_join(
   iris,
   height,
   by = "Species",
   copy = FALSE,
-  keep = TRUE
+  keep = FALSE
 )
 
 
@@ -78,13 +70,29 @@ shark <- full_join(
 plot(iris$Sepal.Length,iris$Sepal.Width)
 
 #3a. now make the same plot in ggplot
-
+ggplot(iris, aes(Sepal.Length, Sepal.Width)) +
+geom_point()
 
 #3b. make a scatter plot with ggplot and get rid of  busy grid lines
-
+ggplot(iris, aes(Sepal.Length, Sepal.Width)) +
+  geom_point() +
+theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank()) +
+theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank())
 
 #3c. make a scatter plot with ggplot, remove grid lines, add a title and axis labels, 
 #    show species by color, and make the point size proportional to petal length
+
+#plot with no gridlines
+ggplot(iris, aes(Sepal.Length, Sepal.Width)) +
+  theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank()) +
+  theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank()) +
+  #Titles
+  ggtitle("Plot of Sepal Length vs Width") +
+  xlab("Sepal Length") + ylab("Sepal Width")+
+  #color and size
+  geom_point(aes(colour = Species), size = iris$Petal.Length/2)
+  
+
 
 #####################################
 ##### Question: how did         #####
