@@ -1,3 +1,6 @@
+#Will Ackerman
+#Activity 4
+
 #use built in iris dataset
 #take a look at it 
 head(iris)
@@ -18,22 +21,28 @@ library("ggplot2")
 
 #Initialization of vectors
 regressions <- list()
+index = 1
+count = 1
+
+all[[1]] <- flower$Sepal.Length 
+all[[2]] <- flower$Sepal.Width
+all[[3]] <- flower$Petal.Length
+all[[4]] <- flower$Petal.Width
+all[[5]] <- flower$Sepal.Length
+all[[6]] <- flower$Petal.Length
 
 #Using only data for iris versicolor
 #write a for loop
 #that produces a regression table
 #for each of the following relationships
-for(i in 1:1){
+for(i in 1:(length(all)/2)){
 
   #1. iris  sepal length x width
-  regressions[[i]] <- summary(lm(flower$Sepal.Length ~ flower$Sepal.Width))
+  regressions[[index]] <- summary(lm(all[[count]] ~ all[[count+1]]))
+  count = count+2
+  index = index+1
 
-  #2. iris  petal length x width
-  regressions[[i +1]] <- summary(lm(flower$Petal.Length ~ flower$Petal.Width))
-
-  #3. iris sepal length x petal length
-  regressions[[i+2]] <- summary(lm(flower$Sepal.Length ~ flower$Petal.Length))
- 
+  
  
 }
 
@@ -53,7 +62,7 @@ height <- data.frame(Species = c("virginica","setosa","versicolor"),
                      Height.cm = c(60,100,11.8))
 as_tibble(height)
 as_tibble(iris)
-shark <- left_join(
+Iris2 <- left_join(
   iris,
   height,
   by = "Species",
@@ -98,5 +107,9 @@ ggplot(iris, aes(Sepal.Length, Sepal.Width)) +
 ##### Question: how did         #####
 ##### arguments differ between  #####
 ##### plot and ggplot?          #####
-#####################################		
+#####################################
+#The ggplot had a lot more variables. This was helpful as it allowed
+#more customization within the scatter plot. For example, using different
+#colors, the three different species of iris were able to be differentiated
+#on the scatter plot. 
 
