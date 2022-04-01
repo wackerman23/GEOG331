@@ -3,19 +3,19 @@
 
 #Initializing Data ----------------------------
 #set the working directory
-setwd("Z:\\students\\wackerman\\Stream Flow")
+setwd("/Users/willackerman/GEOG331/streamflow")
 
 #load in lubridate
 library(lubridate)
 
 #read in streamflow data
-datH <- read.csv("Z:\\data\\streamflow\\stream_flow_data.csv",
+datH <- read.csv("/Users/willackerman/GEOG331/streamflow/stream_flow_data.csv",
                  na.strings = c("Eqp"))
 head(datH)    
 
 #read in precipitation data
 #hourly precipitation is in mm
-datP <- read.csv("Z:\\data\\streamflow\\2049867.csv")                            
+datP <- read.csv("/Users/willackerman/GEOG331/streamflow/2049867.csv")                            
 head(datP)
 
 #only use most reliable measurements
@@ -64,18 +64,17 @@ tabulate(datD$doy)
 length(datD$discharge)
 length(datD$decYear)
 
-#### Question 4 ####
+#### Question 4 + Question 5 + Question 6 ####
 
 
 #basic formatting
-aveF <- aggregate(datD$discharge, by=list(datD$doy), FUN="mean")
+aveF <- aggregate(datD$discharge[datD$doy < 366], by=list(datD$doy[datD$doy < 366]), FUN="mean")
 colnames(aveF) <- c("doy","dailyAve")
-sdF <- aggregate(datD$discharge, by=list(datD$doy), FUN="sd")
+sdF <- aggregate(datD$discharge[datD$doy < 366], by=list(datD$doy[datD$doy < 366]), FUN="sd")
 colnames(sdF) <- c("doy","dailySD")
-X <- vector(length=366)
-
-X<-aggregate(datD$discharge[datD$year == 2017], by=list(datD$doy[datD$year == 2017]), FUN="mean")
-aveF$Ave2017 <- X
+D17 <- aggregate(datD$discharge[datD$year == 2017], by=list(datD$doy[datD$year == 2017]), FUN="mean")
+colnames(D17) <- c("doy","Ave2017")
+aveF <- merge(aveF, D17, by="doy")
 
 
 #start new plot
@@ -85,7 +84,7 @@ dev.new(width=8,height=8)
 #bigger margins
 par(mai=c(1,1,1,1))
 #make plot
-plot(aveF$doy -1, aveF$dailyAve,
+plot(aveF$doy, aveF$dailyAve,
      type="l", 
      xlab="Year", 
      ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
@@ -98,7 +97,7 @@ polygon(c(aveF$doy, rev(aveF$doy)),#x coordinates
         col=rgb(0.392, 0.584, 0.929,.2), #color that is semi-transparent
         border=NA#no border
 )
-lines(aveF$doy, datD$discharge[datD$year == 2017], col = "green")
+lines(aveF$doy, aveF$Ave2017, col = "green")
 
 axis(1, seq(0,360, by=40), #tick intervals
      lab=seq(0,360, by=40)) #tick labels
@@ -110,4 +109,19 @@ legend("topright", c("mean","1 standard deviation"), #legend items
        col=c("black",rgb(0.392, 0.584, 0.929,.2)),#colors
        pch=c(NA,15),#symbols
        bty="n")#no legend border
++ 
 
+  
+#### Question 7 ####
+startTime = 1
+endTime = 2
+runningIndex
+  for(i in 1:(length(datP)))
+  {
+    vectorCheck <- c(datP$HPCP[datP$decDay => startTime], datP$HPCP[datP$decYear =< endTime])
+  }
+
+
+#subsest discharge and precipitation within range of interest
+hydroD <- datD[datD$doy >= 248 & datD$doy < 250 & datD$year == 2011,]
+hydroP <- datP[datP$doy >= 248 & datP$doy < 250 & datP$year == 2011,]
