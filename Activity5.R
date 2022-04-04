@@ -63,6 +63,7 @@ plot(datD$decYear, datD$discharge, type="l", xlab="Year", ylab=expression(paste(
 tabulate(datD$doy)
 length(datD$discharge)
 length(datD$decYear)
+length(datD$decYear)/(365-270 + (365*11))
 
 #### Question 4 + Question 5 + Question 6 ####
 
