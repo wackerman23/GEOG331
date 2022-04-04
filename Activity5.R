@@ -109,19 +109,128 @@ legend("topright", c("mean","1 standard deviation"), #legend items
        col=c("black",rgb(0.392, 0.584, 0.929,.2)),#colors
        pch=c(NA,15),#symbols
        bty="n")#no legend border
-+ 
+
 
   
 #### Question 7 ####
-startTime = 1
-endTime = 2
-runningIndex
-  for(i in 1:(length(datP)))
+
+
+
+finalPRCP <- vector()
+days <- vector()
+
+  for(i in 2007:2014)
   {
-    vectorCheck <- c(datP$HPCP[datP$decDay => startTime], datP$HPCP[datP$decYear =< endTime])
+    if(leap_year(i)) {index <-366}
+    else {index <-365}
+    for(j in 1:index)
+    {
+      vectorCheck1 <- c(datP$year[datP$doy == j])
+      vectorCheck2 <- c(datP$HPCP[datP$doy == j])
+      vectorCheck5 <- c(datP$decYear[datP$doy == j])
+      vectorCheck3 <- c(vectorCheck1[vectorCheck1 == i])
+      vectorCheck4 <- c(vectorCheck2[vectorCheck1 == i])
+      vectorCheck6 <- c(vectorCheck5[vectorCheck1 == i])
+      
+      if(length(vectorCheck3) == 24)
+      {
+        finalPRCP <- append(finalPRCP, vectorCheck4)
+        days <- append(days, vectorCheck6)
+      }
+      
+      
+    }
   }
 
+PRCP <- data.frame(finalPRCP, days)
+
+plot(PRCP$days, PRCP$finalPRCP, pch=12, type="l", xlab = "Decimal Day of Year",
+     ylab="Precipitation (mm)")
+
+
+#### Question 8 ####
 
 #subsest discharge and precipitation within range of interest
-hydroD <- datD[datD$doy >= 248 & datD$doy < 250 & datD$year == 2011,]
-hydroP <- datP[datP$doy >= 248 & datP$doy < 250 & datP$year == 2011,]
+hydroD <- datD[datD$doy >= 352 & datD$doy < 354 & datD$year == 2012,]
+hydroP <- datP[datP$doy >= 352 & datP$doy < 354 & datP$year == 2012,]
+
+min(hydroD$discharge)
+
+#get minimum and maximum range of discharge to plot
+#go outside of the range so that it's easy to see high/low values
+#floor rounds down the integer
+yl <- floor(min(hydroD$discharge))-1
+#ceiling rounds up to the integer
+yh <- ceiling(max(hydroD$discharge))+1
+#minimum and maximum range of precipitation to plot
+pl <- 0
+pm <-  ceiling(max(hydroP$HPCP))+.5
+#scale precipitation to fit on the 
+hydroP$pscale <- (((yh-yl)/(pm-pl)) * hydroP$HPCP) + yl
+
+par(mai=c(1,1,1,1))
+#make plot of discharge
+plot(hydroD$decDay,
+     hydroD$discharge, 
+     type="l", 
+     ylim=c(yl,yh), 
+     lwd=2,
+     xlab="Day of year", 
+     ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")))
+#add bars to indicate precipitation 
+for(i in 1:nrow(hydroP)){
+  polygon(c(hydroP$decDay[i]-0.017,hydroP$decDay[i]-0.017,
+            hydroP$decDay[i]+0.017,hydroP$decDay[i]+0.017),
+          c(yl,hydroP$pscale[i],hydroP$pscale[i],yl),
+          col=rgb(0.392, 0.584, 0.929,.2), border=NA)
+}
+
+
+#### Question 9 ####
+library(ggplot2)
+
+#specify year as a factor
+datD$yearPlot <- as.factor(datD$year)
+
+datPlot <- data.frame(datD$decDay[datD$yearPlot == 2016], datD$discharge[datD$yearPlot == 2016])
+colnames(datPlot) <- c("doy", "discharge")
+
+flags <- vector()
+
+for(i in datPlot$doy)
+{
+ 
+  if(i >= 79.0 & i <= 170.25){
+    flags <- append(flags, 'Spring')}
+  else if(i >= 170.25 & i <= 261.5){flags <- append(flags, 'Summer')}
+  else if(i >= 261.5 & i <= 352.75){flags <- append(flags, 'Fall')}
+  else if(i >= 352.75 || i <= 79.0){flags <- append(flags, 'Winter')}
+}
+
+datPlot$season <- flags
+
+#make a violin plot
+ggplot(data= datPlot, aes(flags, discharge)) + 
+  geom_violin()
+
+
+datPlot <- data.frame(datD$decDay[datD$yearPlot == 2017], datD$discharge[datD$yearPlot == 2017])
+colnames(datPlot) <- c("doy", "discharge")
+
+flags <- vector()
+for(i in datPlot$doy)
+{
+  if(i >= 79.0 & i <= 170.25){
+    flags <- append(flags, 'Spring')}
+  else if(i >= 170.25 & i <= 261.5){flags <- append(flags, 'Summer')}
+  else if(i >= 261.5 & i <= 352.75){flags <- append(flags, 'Fall')}
+  else if(i >= 352.75 || i <= 79.0){
+    flags <- append(flags, 'Winter')}
+}
+
+datPlot$season <- flags
+
+#make a violin plot
+ggplot(data= datPlot, aes(flags, discharge)) + 
+  geom_violin()
+
