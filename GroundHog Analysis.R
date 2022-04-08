@@ -5,8 +5,8 @@
 #set the working directory
 setwd("Z:\\students\\wackerman\\Final Project")
 
-#load in lubridate
-library(lubridate)
+#load in tidyverse
+library(tidyverse)
 
 #read in streamflow data
 dataStart <- read.csv("Z:\\students\\wackerman\\Final Project\\2927109.csv")
@@ -27,5 +27,19 @@ dataStart$decYear <- ifelse(leap_year(dataStart$year), dataStart$year + (dataSta
 
 
 ####Check the data for consistency####
-dataAnalysis <- dataStart[dat]
+distict(dataStart, 
+
+dataStart$yearFlag <- as.factor(dataStart$STATION)
+levels(dataStart$yearFlag)[1]
+
+dataStart[dataStart$yearFlag[levels(dataStart$yearFlag)[1]]]
+dataAnalysis <- sample(dataStart, levels(dataStart$yearFlag)[1], replace =TRUE)
+
+for(i in levels(dataStart$yearFlag))
+{
+  left_join(dataAnalysis, dataStart[dataStart$yearFlag[i]], copy = TRUE)
+}
+
+datPlot$season <- flags
+
                  
