@@ -7,9 +7,14 @@ setwd("Z:\\students\\wackerman\\Final Project")
 
 #load in tidyverse
 library(tidyverse)
+library(lubridate)
 
-#read in streamflow data
+#read in data
 dataStart <- read.csv("Z:\\students\\wackerman\\Final Project\\2927109.csv")
+
+#read in groundhog data
+dataGroundHog <- read.csv("Z:\\students\\wackerman\\Final Project\\2927109.csv")
+
 
 #### define time for data #####
 #convert date and time
@@ -26,20 +31,25 @@ dataStart$decYear <- ifelse(leap_year(dataStart$year), dataStart$year + (dataSta
                        dataStart$year + (dataStart$doy/365))
 
 
-####Check the data for consistency####
-distict(dataStart, 
+####Check the data for overlap####
+dataSorted <- distinct(dataStart, dataStart$decYear, .keep_all = TRUE)
 
-dataStart$yearFlag <- as.factor(dataStart$STATION)
-levels(dataStart$yearFlag)[1]
+####Take applicable data
+flags <- vector()
 
-dataStart[dataStart$yearFlag[levels(dataStart$yearFlag)[1]]]
-dataAnalysis <- sample(dataStart, levels(dataStart$yearFlag)[1], replace =TRUE)
-
-for(i in levels(dataStart$yearFlag))
+for(i in dataSorted$doy)
 {
-  left_join(dataAnalysis, dataStart[dataStart$yearFlag[i]], copy = TRUE)
+  
+  if(i >= 34.0 & i <= 76.0){flags <- append(flags, 'after')}
+  else if(i >= 357.0 || i < 33.0){flags <- append(flags, 'before')}
+  else if(i == 33.0){flags <- append(flags, 'day')}
+  else{flags <- append(flags, 'useless')}
+  
 }
+        
+dataSorted$flag <- flags
 
-datPlot$season <- flags
+beforeWinter <- mean(weather$TMAX[weather$NAME == "ABERDEEN, WA US"], na.rm=TRUE)
 
-                 
+
+
