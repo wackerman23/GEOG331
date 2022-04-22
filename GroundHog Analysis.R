@@ -36,20 +36,45 @@ dataSorted <- distinct(dataStart, dataStart$decYear, .keep_all = TRUE)
 
 ####Take applicable data
 flags <- vector()
+Setflags <- vector()
+flagCounter = 0
+
 
 for(i in dataSorted$doy)
 {
-  
-  if(i >= 34.0 & i <= 76.0){flags <- append(flags, 'after')}
-  else if(i >= 357.0 || i < 33.0){flags <- append(flags, 'before')}
-  else if(i == 33.0){flags <- append(flags, 'day')}
-  else{flags <- append(flags, 'useless')}
+  if(i == 357.0){flagCounter <- flagCounter + 1}
+  if(i >= 34.0 & i <= 76.0){flags <- append(flags, 'after')
+  Setflags <- append(Setflags, flagCounter)}
+  else if(i >= 357.0 || i < 33.0){flags <- append(flags, 'before')
+  Setflags <- append(Setflags, flagCounter)}
+  else if(i == 33.0){flags <- append(flags, 'day')
+  Setflags <- append(Setflags, flagCounter)}
+  else{flags <- append(flags, 'useless')
+  Setflags <- append(Setflags, flagCounter)}
   
 }
         
 dataSorted$flag <- flags
+dataSorted$setFlag <- Setflags
 
-beforeWinter <- mean(weather$TMAX[weather$NAME == "ABERDEEN, WA US"], na.rm=TRUE)
+#### Calculate temperature Average ####
+
+for(i in dataSorted$TMAX)
+{
+  dataSorted$TAVE <- i - 
+  
+}
+
+
+#### Analyze Temperature Data ####
+finalAverages <- vector()
+
+for(i in dataSorted$setFlag)
+{
+  finalAverages <- append(mean(dataSorted$TAVE[dataSorted$flag[dataSorted$setFlag == i] == 'before']))
+  finalAverages <- append(mean(dataSorted$TAVE[dataSorted$flag[dataSorted$setFlag == i] == 'after']))
+  
+}
 
 
 
