@@ -10,10 +10,10 @@ library(tidyverse)
 library(lubridate)
 
 #read in data
-dataStart <- read.csv("Z:\\students\\wackerman\\Final Project\\2927109.csv")
+dataStart <- read.csv("Z:\\students\\wackerman\\Final Project\\2952812.csv")
 
 #read in groundhog data
-dataGroundHog <- read.csv("Z:\\students\\wackerman\\Final Project\\2927109.csv")
+dataGroundHog <- read.csv("Z:\\students\\wackerman\\Final Project\\2952812.csv")
 
 
 #### define time for data #####
@@ -58,21 +58,23 @@ dataSorted$flag <- flags
 dataSorted$setFlag <- Setflags
 
 #### Calculate temperature Average ####
+count <- 0
 
-for(i in dataSorted$TMAX)
+for(i in 1:length(dataSorted$decYear))
 {
-  dataSorted$TAVE <- i - 
-  
+  dataSorted$TAVE[i] <- (dataSorted$TMAX[i] + dataSorted$TMIN[i])/2
+ 
 }
 
+mean(dataSorted$TAVE[dataSorted$setFlag == 1][dataSorted$flag == 'before'], na.rm=TRUE)
 
 #### Analyze Temperature Data ####
 finalAverages <- vector()
 
-for(i in dataSorted$setFlag)
+for(l in dataSorted$setFlag)
 {
-  finalAverages <- append(mean(dataSorted$TAVE[dataSorted$flag[dataSorted$setFlag == i] == 'before']))
-  finalAverages <- append(mean(dataSorted$TAVE[dataSorted$flag[dataSorted$setFlag == i] == 'after']))
+  finalAverages <- append(mean(dataSorted$TAVE[dataSorted$setFlag == l][dataSorted$flag == 'before'], na.rm=TRUE))
+  finalAverages <- append(mean(dataSorted$TAVE[dataSorted$setFlag == l][dataSorted$flag == 'after'], na.rm=TRUE))
   
 }
 
