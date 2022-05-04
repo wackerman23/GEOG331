@@ -43,7 +43,9 @@ flagCounter = 0
 for(i in dataSorted$doy)
 {
   if(i == 357.0){flagCounter <- flagCounter + 1}
-  if(i >= 34.0 & i <= 76.0){flags <- append(flags, 'after')
+  if(i > 48.0 & i <= 76.0){flags <- append(flags, 'after2')
+  Setflags <- append(Setflags, flagCounter)}
+  else if(i >= 34.0 & i <= 48.0){flags <- append(flags, 'after1')
   Setflags <- append(Setflags, flagCounter)}
   else if(i >= 357.0 || i < 33.0){flags <- append(flags, 'before')
   Setflags <- append(Setflags, flagCounter)}
@@ -58,7 +60,6 @@ dataSorted$flag <- flags
 dataSorted$setFlag <- Setflags
 
 #### Calculate temperature Average ####
-count <- 0
 
 for(i in 1:length(dataSorted$decYear))
 {
@@ -69,14 +70,49 @@ for(i in 1:length(dataSorted$decYear))
 mean(dataSorted$TAVE[dataSorted$setFlag == 1][dataSorted$flag == 'before'], na.rm=TRUE)
 
 #### Analyze Temperature Data ####
-finalAverages <- vector()
+firstAverages <- vector()
+shortAverages <- vector()
+longAverages <- vector()
+years <- vector()
+uselessVect <- vector()
+count <- 0
 
 for(l in dataSorted$setFlag)
 {
-  finalAverages <- append(mean(dataSorted$TAVE[dataSorted$setFlag == l][dataSorted$flag == 'before'], na.rm=TRUE))
-  finalAverages <- append(mean(dataSorted$TAVE[dataSorted$setFlag == l][dataSorted$flag == 'after'], na.rm=TRUE))
-  
+  count = l
+  firstAverages <- append(mean(dataSorted$TAVE[dataSorted$setFlag == count][dataSorted$flag == 'before'], na.rm=TRUE))
+  shortAverages <- append(mean(dataSorted$TAVE[dataSorted$setFlag == count][dataSorted$flag == 'after1'], na.rm=TRUE))
+  longAverages <- append(mean(dataSorted$TAVE[dataSorted$setFlag == count][dataSorted$flag == 'after2'], na.rm=TRUE))
+  years <- append(dataSorted$year[dataSorted$setFlag == l][dataSorted$flag == 'day'], na.rm=TRUE)
+  #uselessVect <- append(mean(dataSorted$TAVE[dataSorted$setFlag == l][dataSorted$flag == 'useless'], na.rm=TRUE))
 }
 
+
+finalDifferenceShort <- vector()
+finalDifferenceLong <- vector()
+
+for(i in 1:length(firstAverages))
+{
+  finalDifferenceShort <- append(firstAverages[i]/shortAverages[i])
+  finalDifferenceLong <- append(firstAverages[i]/(shortAverages[i] + longAverages[i] + longAverages[i])/3)
+}
+
+
+finalData <- data.frame(years, finalDifferenceShort, finalDifferenceLong)
+predictionAccuracyShort <- vector()
+predictionAccuracyLong <- vector()
+
+for(i in finalData$years)
+{
+  if (finalData$finalDifferenceShort[i] <= 1.05 & finalData$finalDifferenceShort[i] >= .95)
+  {predictionAccuracyShort <- append(TRUE)}
+  else {predictionAccuracyShort <- append(FALSE)}
+  if (finalData$finalDifferenceLong[i] <= 1.05 & finalData$finalDifferenceLong[i] >= .95)
+  {predictionAccuracyLong <- append(TRUE)}
+  else {predictionAccuracyLong <- append(FALSE)}
+}
+
+finalData$predictionAccuracyShort <- predictionAccuracyShort
+finalData$predictionAccuracyLong <- predictionAccuracyLong
 
 
