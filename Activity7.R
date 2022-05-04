@@ -1,11 +1,15 @@
-install.packages(c("caret","randomForest"))
-install.packages(c("terra"))
+install.packages(c("lattice"))
+
+install.packages(c("caret"))
+install.packages(c("randomForest"))
+
+install.packages(c("tidyverse"))
 library(terra)
 library(caret)
 library(randomForest)
 
 #set up working directory for oneida data folder on the server
-setwd("Z:\\data\\oneida")
+setwd("/Users/willackerman/GEOG331/oneida")
 
 #read in Sentinel data
 
@@ -137,3 +141,4 @@ rf_errorM$table
 
 #look at the overall accuracy
 rf_errorM$overall
+
